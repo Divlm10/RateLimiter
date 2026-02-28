@@ -4,7 +4,7 @@ const router=express.Router();
 
 import { fixedWindowLimiter } from "../middlewares/fixedWindowLimiter.js";
 import { createFixedWindowLimiter } from "../middlewares/fixedWindowAdvanced.js";
-
+import { createSlidingWindowLimiter } from "../middlewares/slidingWindowLimiter.js";
 
 router.get("/limited", fixedWindowLimiter, (req, res) => {
   res.json({ message: "Rate limited route working!" });
@@ -18,11 +18,17 @@ const strictLimiter=createFixedWindowLimiter(60*1000,5);//5 max reqs in 60 secs
 const relaxedLimiter=createFixedWindowLimiter(50*1000,8);//8 max reqs in 50 secs 
 
 router.get("/strict",strictLimiter,(req,res)=>{
-    res.json({message:"Strict limited route" });
+    res.json({message:"Strict limited route." });
 });
 
 router.get("/relaxed",relaxedLimiter,(req,res)=>{
-    res.json({ message: "Relaxed limited route" });
+    res.json({ message: "Relaxed limited route." });
+});
+
+const slidingLimiter=createSlidingWindowLimiter(60*1000,5);
+
+router.get("/sliding",slidingLimiter,(req,res)=>{
+    res.json({message:"Sliding window router working."});
 });
 
 export default router;
