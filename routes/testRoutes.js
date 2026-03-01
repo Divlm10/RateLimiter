@@ -6,6 +6,7 @@ import { fixedWindowLimiter } from "../middlewares/fixedWindowLimiter.js";
 import { createFixedWindowLimiter } from "../middlewares/fixedWindowAdvanced.js";
 import { createSlidingWindowLimiter } from "../middlewares/slidingWindowLimiter.js";
 import { createOptimizedSlidingLimiter } from "../middlewares/slidingWindowLimiterOptimized.js";
+import { createTokenBucketLimiter } from "../middlewares/tokenBucketLimiter.js";
 
 router.get("/limited", fixedWindowLimiter, (req, res) => {
   res.json({ message: "Rate limited route working!" });
@@ -37,5 +38,10 @@ router.get("/optSliding",optimizedSlidingLimiter,(req,res)=>{
     res.json({message:"Optimized Sliding router is up and running."});
 });
 
+const tokenLimiter=createTokenBucketLimiter(5,1);//max tokens=5,refillrate=1
+
+router.get("/token",tokenLimiter,(req,res)=>{
+    res.json({message: "Token bucket route working"});
+});
 
 export default router;
